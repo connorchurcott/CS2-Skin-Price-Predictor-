@@ -30,7 +30,11 @@ class GUIWindow():
 
         self.selectedWeaponType = tk.StringVar()
         self.selectWeaponTypeBox = ttk.Combobox(self.root, textvariable=self.selectedWeaponType, state="readonly")
-        self.selectWeaponTypeBox["values"] = ["Consumer Grade (White)", "Industrial Grade (light blue)", "Mil-Spec (blue)", "Restricted (Purple)", "Classified (Pink)", "Covert (Red)", "Contraband (Yellow)"]
+        self.selectWeaponTypeBox["values"] = ["---PISTOLS---", "CZ75-Auto", "Desert Eagle", "Dual Berettas", "Five-SeveN", "Glock-18", "P200", "P250", "R8 Revolver", "Tec-9", "USP-S", 
+                                              "---RIFLES---", "AK-47", "AUG", "AWP", "FAMAS", "G3SG1", "Galil AR", "M4A1-S", "M4A4", "SCAR-20", "SG 553", "SSG 08", 
+                                              "---SMGs---", "MAC-10", "MP5-SD", "MP7", "MP9", "PP-Bizon", "P90", "UMP-45",
+                                              "---HEAVY---", "MAG-7", "Nova", "Sawed-Off", "XM1014", "M249", "Negev", 
+                                              "---KNIVES---", "Bayonet", "Bowie Knife", "Butterfly Knife", "Classic Knife", "Falchion Knife", "Flip Knife", "Gut Knife", "Huntsman Knife", "Karambit", "Kukri Knife", "M9 Bayonet", "Navaja Knife", "Nomad Knife", "Paracord Knife", "Shadow Daggers", "Skeleton Knife", "Stiletto Knife", "Survival Knife", "Talon Knife", "Ursus Knife"]
         self.selectWeaponTypeBox.pack(pady=10)
 
         self.selectedStatTrak = tk.StringVar()
