@@ -68,23 +68,8 @@ class GUIWindow():
     def run(self):
         self.root.mainloop(); 
     
-
-
-
-    
+    # demo function currently, remove and replace with real ai functionality hwne done
     def printselected(self):
         self.setPredictedValue(0.67) 
         print(self.getSelectedValues())
         return 
-
-
-
-
-def main():
-    window = GUIWindow()
-    window.run()
-    return 
-
-
-if __name__ == "__main__":
-    main() 
