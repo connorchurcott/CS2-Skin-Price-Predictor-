@@ -5,7 +5,7 @@ from tkinter import ttk
 class GUIWindow(): 
 
     # Use GUIWindow.getSelectedValues() to get an array of the user entered values in this order [Wear, Rarity, WeaponType, isStattrak]
-    # Use GUIWindow.setPredictedValue(newPredictedValue) to set the GUI to display the new precited value
+    # Use GUIWindow.setOutputValues(newPredictedValue, realValue) to set the GUI to display the new precited value
 
     def __init__(self):
         self.root = tk.Tk()
@@ -56,10 +56,17 @@ class GUIWindow():
         self.outputBox = tk.Label(self.root, textvariable=self.predictedValue, relief="sunken", width=15)
         self.outputBox.grid(row=5, column=1, padx=1, pady=10, sticky="w")
 
+        self.realValue = tk.DoubleVar()
+        self.outputLabelRealValue = tk.Label(self.root, text="Real Value: ")
+        self.outputLabelRealValue.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+        self.outputBoxRealValue = tk.Label(self.root, textvariable=self.realValue, relief="sunken", width=15)  
+        self.outputBoxRealValue.grid(row=6, column=1, padx=1, pady=10, sticky="w")
 
 
-    def setPredictedValue(self, newPredictedValue): 
+
+    def setOutputValues(self, newPredictedValue, newRealValue): 
         self.predictedValue.set(newPredictedValue)  
+        self.realValue.set(newRealValue)
 
     def getSelectedValues(self): 
         selectedValues = [self.selectedWear.get(), self.selectedRarity.get(), self.selectedWeaponType.get(), self.selectedStatTrak.get()]
@@ -70,6 +77,5 @@ class GUIWindow():
     
     # demo function currently, remove and replace with real ai functionality hwne done
     def printselected(self):
-        self.setPredictedValue(0.67) 
         print(self.getSelectedValues())
         return 
