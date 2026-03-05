@@ -15,4 +15,15 @@ def get_price(price):
     final = df[['Weapon','Case','Rarity','Min Wear','Max Wear','Case_1',price]].copy(deep=True) 
     return final
 
+def replace_rarity(rarity):
+    #Rarity order: [Mil-spec, Restricted, Classified, Covert, Contraband]
 
+    #extract the rarity
+    rarities = rarity.str.split().str[0]
+    #replaces the rarities with their corresponding values
+    final = rarities.replace({'Mil-Spec': 1, 'Restricted': 2, 'Classified': 3, 'Covert': 4, 'Contraband': 5})
+
+    return final
+
+#replace the rarity column with numeric values
+df['Rarity'] = replace_rarity(df['Rarity'])
