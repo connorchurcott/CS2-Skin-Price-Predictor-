@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox as mbox
+from helpers import getCasesFromCSV
 
 
 class GUIWindow(): 
@@ -9,9 +11,11 @@ class GUIWindow():
 
     def __init__(self):
         self.root = tk.Tk()
+        self.allCases = getCasesFromCSV()
         self.windowStyling()
         self.setupInputFields()
         self.setupOutputFields()
+
 
     def windowStyling(self): 
         self.root.title("CS2 Skin Price Predictor")
@@ -44,23 +48,28 @@ class GUIWindow():
         self.selectStatTrakBox["values"] = ["Yes", "No"]
         self.selectStatTrakBox.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
+        self.selectedCase = tk.StringVar()
+        self.selectCaseEntry = tk.Entry(self.root, textvariable=self.selectedCase)
+        self.selectCaseEntry.grid(row = 4, column=0, padx=10, pady=10, sticky="w")
+
+
 
         # replace self.printselected with actual function that sends that to the predictor later
         self.button = tk.Button(self.root, text="Submit", command=self.printselected)
-        self.button.grid(row=4, column=0, pady=10)
+        self.button.grid(row=5, column=0, pady=10)
     
     def setupOutputFields(self): 
         self.predictedValue = tk.DoubleVar()
         self.outputLabel = tk.Label(self.root, text="Predicted Value: ")
-        self.outputLabel.grid(row=5, column=0, padx=10, pady=50, sticky="w")
+        self.outputLabel.grid(row=6, column=0, padx=10, pady=50, sticky="w")
         self.outputBox = tk.Label(self.root, textvariable=self.predictedValue, relief="sunken", width=15)
-        self.outputBox.grid(row=5, column=1, padx=1, pady=10, sticky="w")
+        self.outputBox.grid(row=6, column=1, padx=1, pady=10, sticky="w")
 
         self.realValue = tk.DoubleVar()
         self.outputLabelRealValue = tk.Label(self.root, text="Real Value: ")
-        self.outputLabelRealValue.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+        self.outputLabelRealValue.grid(row=7, column=0, padx=10, pady=10, sticky="w")
         self.outputBoxRealValue = tk.Label(self.root, textvariable=self.realValue, relief="sunken", width=15)  
-        self.outputBoxRealValue.grid(row=6, column=1, padx=1, pady=10, sticky="w")
+        self.outputBoxRealValue.grid(row=7, column=1, padx=1, pady=10, sticky="w")
 
 
 
@@ -69,7 +78,11 @@ class GUIWindow():
         self.realValue.set(newRealValue)
 
     def getSelectedValues(self): 
-        selectedValues = [self.selectedWear.get(), self.selectedRarity.get(), self.selectedWeaponType.get(), self.selectedStatTrak.get()]
+        if self.selectedCase.get() not in self.allCases: 
+            mbox.showerror("Entered Case Does Not Exist", "Please enter a valid case")
+            return
+
+        selectedValues = [self.selectedWear.get(), self.selectedRarity.get(), self.selectedWeaponType.get(), self.selectedStatTrak.get(), self.selectedCase.get()]
         return selectedValues
 
     def run(self):

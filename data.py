@@ -18,6 +18,8 @@ def encode_rarity(rarity):
     )
 
 
+
+
 df["Rarity"] = encode_rarity(df["Rarity"])
 
 # Encoding the weapon types to numerical values
