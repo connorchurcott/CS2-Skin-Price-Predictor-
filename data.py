@@ -6,7 +6,7 @@ import pandas as pd
 DATA = "Skins_Price.csv"
 OUTPUT = "extracted_data.csv"
 
-# Some values of the prices are labelled as Not Possible
+
 df = pd.read_csv(DATA)
 
 
@@ -17,10 +17,17 @@ def encode_rarity(rarity):
         {"Mil-Spec": 1, "Restricted": 2, "Classified": 3, "Covert": 4, "Contraband": 5}
     )
 
-
-
-
 df["Rarity"] = encode_rarity(df["Rarity"])
+
+# encode cases
+allCases = df["Case"].unique()
+caseEncode = {}
+
+for i, case in enumerate(allCases):
+    caseEncode[case] = i
+
+df['Case_ID'] = df["Case"].map(caseEncode)
+
 
 # Encoding the weapon types to numerical values
 weapon_encoder = {w: i for i, w in enumerate(df["Weapon"].unique())}
@@ -48,6 +55,7 @@ for _, row in df.iterrows():
         "Weapon_ID": row["Weapon_ID"],
         "Skin": row["Case"],
         "Case": row["Case_1"],
+        "Case_ID": row["Case_ID"],
         "Rarity": row["Rarity"],
         "Min_Wear": row["Min Wear"],
         "Max_Wear": row["Max Wear"],
@@ -78,6 +86,7 @@ result = result[
         "Weapon_ID",
         "Skin",
         "Case",
+        "Case_ID",
         "Rarity",
         "Min_Wear",
         "Max_Wear",
