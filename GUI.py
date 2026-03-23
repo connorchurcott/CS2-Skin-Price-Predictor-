@@ -6,7 +6,7 @@ from helpers import getCasesFromCSV
 
 class GUIWindow(): 
 
-    # Use GUIWindow.getSelectedValues() to get an array of the user entered values in this order [Wear, Rarity, WeaponType, isStattrak]
+    # Use GUIWindow.getSelectedValues() to get an array of the user entered values in this order [Wear, Rarity, WeaponType, isStattrak, Case]
     # Use GUIWindow.setOutputValues(newPredictedValue, realValue) to set the GUI to display the new precited value
 
     def __init__(self):
