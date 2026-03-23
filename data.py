@@ -19,7 +19,7 @@ def encode_rarity(rarity):
 
 df["Rarity"] = encode_rarity(df["Rarity"])
 
-# encode cases
+# encodes cases
 allCases = df["Case"].unique()
 caseEncode = {}
 
