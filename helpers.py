@@ -1,4 +1,6 @@
 import pandas as pd
+from sklearn.metrics import mean_absolute_percentage_error
+from sklearn.model_selection import cross_val_score, KFold
 
 CLEAN_CSV = "extracted_data.csv"
 
@@ -61,4 +63,11 @@ def getRMSE(y_predicted, y_test):
     sds = sds**0.5
     return sds
 
+def getMAPE(y_predicted, y_test):
+    return mean_absolute_percentage_error(y_test,y_predicted)
 
+def getcrossvalidation(x,y,split,model):
+
+    folds = KFold(n_splits=split,shuffle=True)
+    score = cross_val_score(model,x,y,cv=folds)
+    return score.mean()
