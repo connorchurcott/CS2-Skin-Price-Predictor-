@@ -2,7 +2,7 @@ import joblib as jl
 import helpers
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import cross_val_score
+
 
 MAX_DEPTH = 20
 RANDOM_STATE = 67
@@ -19,10 +19,13 @@ model.fit(X_train, y_train)
 y_predicted = model.predict(X_test)
 mae = helpers.getMAE(y_predicted, y_test)
 rmse = helpers.getRMSE(y_predicted, y_test)
-
+mape = helpers.getMAPE(y_predicted, y_test)
+cross_val = helpers.getcrossvalidation(X,y,5,model)
 print(mae)
-print(rmse)
-
+print(rmse) 
+print(mape)
+#cross_val is the r2 value
+print(cross_val)
 # about $14 off on avg, still need cross validation, parameter tunning, hook up to GUIi
 # gui needs way to convert user entered things into the ID's the model is using
 
