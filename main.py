@@ -1,8 +1,11 @@
+import joblib
 from GUI import GUIWindow
 
+
 def main(): 
-    window = GUIWindow()
-    window.setOutputValues(0.67, 1)
+    model = joblib.load("model.joblib")
+    metrics = joblib.load("metrics.joblib")
+    window = GUIWindow(model, metrics)
     window.run()
 
 main()

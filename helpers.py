@@ -4,6 +4,7 @@ from sklearn.model_selection import cross_val_score, KFold
 
 CLEAN_CSV = "extracted_data.csv"
 
+
 def getCasesFromCSV(): 
     df = pd.read_csv(CLEAN_CSV)
 
@@ -17,6 +18,47 @@ def getCasesFromCSV():
     allCaseNames = sorted(allCaseNames)
     return allCaseNames
 
+def convertUserInputToFeatures(weapon, case, rarity, wear, isStatTrak):
+    df = pd.read_csv(CLEAN_CSV)
+
+    allWeapons = df["Weapon"].unique()
+    weaponEncode = {}
+    for i, curWeapon in enumerate(allWeapons):
+        weaponEncode[curWeapon] = i 
+
+    allCases = df["Case"].unique()
+    caseEncode = {}
+    for i, curCase in enumerate(allCases): 
+        caseEncode[curCase] = i
+
+    wears = {
+        "Factory New (FN)": 0, 
+        "Minimal Wear (MW)": 1,
+        "Field-Tested (FT)": 2, 
+        "Well-Worn (WW)": 3, 
+        "Battle-Scared (BS)": 4
+    } 
+
+    rarities = {
+        "Mil-Spec (Blue)": 1, 
+        "Restricted (Purple)": 2, 
+        "Classified (Pink)": 3, 
+        "Covert (Red)": 4, 
+        "Contraband (Yellow)": 5
+    }
+
+    statTrak = {
+        "Yes": 1, 
+        "No": 0
+    }
+
+    weaponID = weaponEncode[weapon]
+    caseID = caseEncode[case]
+    rarityID = rarities[rarity]
+    wearID = wears[wear]
+    statTrakID = statTrak[isStatTrak]
+
+    return [weaponID, caseID, rarityID, wearID, statTrakID] 
 
 def getFeaturesAsMatrix(): 
     df = pd.read_csv(CLEAN_CSV)
@@ -71,3 +113,6 @@ def getcrossvalidation(x,y,split,model):
     folds = KFold(n_splits=split,shuffle=True)
     score = cross_val_score(model,x,y,cv=folds)
     return score.mean()
+
+
+
