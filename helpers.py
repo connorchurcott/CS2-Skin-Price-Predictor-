@@ -1,22 +1,24 @@
 import pandas as pd
 from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.model_selection import cross_val_score, KFold
+import numpy as np
 
 CLEAN_CSV = "extracted_data.csv"
 
 
-def getCasesFromCSV(): 
+def getCasesFromCSV():
     df = pd.read_csv(CLEAN_CSV)
 
     allCaseNames = []
 
-    for row in df.iterrows(): 
+    for row in df.iterrows():
 
         if row[1]["Case"] not in allCaseNames:
             allCaseNames.append(row[1]["Case"])
-        
+
     allCaseNames = sorted(allCaseNames)
     return allCaseNames
+
 
 def convertUserInputToFeatures(weapon, case, rarity, wear, isStatTrak):
     df = pd.read_csv(CLEAN_CSV)
@@ -24,33 +26,30 @@ def convertUserInputToFeatures(weapon, case, rarity, wear, isStatTrak):
     allWeapons = df["Weapon"].unique()
     weaponEncode = {}
     for i, curWeapon in enumerate(allWeapons):
-        weaponEncode[curWeapon] = i 
+        weaponEncode[curWeapon] = i
 
     allCases = df["Case"].unique()
     caseEncode = {}
-    for i, curCase in enumerate(allCases): 
+    for i, curCase in enumerate(allCases):
         caseEncode[curCase] = i
 
     wears = {
-        "Factory New (FN)": 0, 
+        "Factory New (FN)": 0,
         "Minimal Wear (MW)": 1,
-        "Field-Tested (FT)": 2, 
-        "Well-Worn (WW)": 3, 
-        "Battle-Scared (BS)": 4
-    } 
+        "Field-Tested (FT)": 2,
+        "Well-Worn (WW)": 3,
+        "Battle-Scared (BS)": 4,
+    }
 
     rarities = {
-        "Mil-Spec (Blue)": 1, 
-        "Restricted (Purple)": 2, 
-        "Classified (Pink)": 3, 
-        "Covert (Red)": 4, 
-        "Contraband (Yellow)": 5
+        "Mil-Spec (Blue)": 1,
+        "Restricted (Purple)": 2,
+        "Classified (Pink)": 3,
+        "Covert (Red)": 4,
+        "Contraband (Yellow)": 5,
     }
 
-    statTrak = {
-        "Yes": 1, 
-        "No": 0
-    }
+    statTrak = {"Yes": 1, "No": 0}
 
     weaponID = weaponEncode[weapon]
     caseID = caseEncode[case]
@@ -58,61 +57,75 @@ def convertUserInputToFeatures(weapon, case, rarity, wear, isStatTrak):
     wearID = wears[wear]
     statTrakID = statTrak[isStatTrak]
 
-    return [weaponID, caseID, rarityID, wearID, statTrakID] 
+    return [weaponID, caseID, rarityID, wearID, statTrakID]
 
-def getFeaturesAsMatrix(): 
+
+def getFeaturesAsMatrix():
     df = pd.read_csv(CLEAN_CSV)
     examples = []
 
     WANTED_FEATURES = ["Weapon_ID", "Case_ID", "Rarity", "Wear_ID", "StatTrak"]
-    
-    for _, row in df.iterrows(): 
+
+    for _, row in df.iterrows():
         curFeatures = []
 
-        for col in WANTED_FEATURES:     
+        for col in WANTED_FEATURES:
             curFeatures.append(row[col])
-        
+
         examples.append(curFeatures)
 
     return examples
 
-def getValuesAsArray(): 
+
+def getValuesAsArray():
     df = pd.read_csv(CLEAN_CSV)
     values = []
 
-    for _, row in df.iterrows(): 
+    for _, row in df.iterrows():
         values.append(row["Price"])
-    
+
     return values
 
 
-def getMAE(y_predicted, y_test): 
-    total = 0
+def getMAE(y_predicted, y_test):
+    y_predicted = np.array(y_predicted)
+    y_test = np.array(y_test)
 
-    for i in range(len(y_predicted)):
-        total += abs(y_predicted[i] - y_test[i])
-    
-    total = total / len(y_predicted)
+    total = np.mean(np.abs(y_predicted - y_test))
     return total
 
-def getRMSE(y_predicted, y_test): 
-    
-    sds = 0
-    for i in range(len(y_predicted)): 
-        sds += (y_predicted[i] - y_test[i])**2
-    
-    sds = sds / len(y_predicted)
-    sds = sds**0.5
-    return sds
+
+def getRMSE(y_predicted, y_test):
+    y_predicted = np.array(y_predicted)
+    y_test = np.array(y_test)
+
+    mse = np.mean((y_predicted - y_test) ** 2)
+    rmse = np.sqrt(mse)
+    return rmse
+
 
 def getMAPE(y_predicted, y_test):
-    return mean_absolute_percentage_error(y_test,y_predicted)
+    y_predicted = np.array(y_predicted, dtype=float)
+    y_test = np.array(y_test, dtype=float)
 
-def getcrossvalidation(x,y,split,model):
+    mask = np.abs(y_test) > 0.01
 
-    folds = KFold(n_splits=split,shuffle=True)
-    score = cross_val_score(model,x,y,cv=folds)
+    if not np.any(mask):
+        return 0.0
+
+    y_test_filtered = y_test[mask]
+    y_pred_filtered = y_predicted[mask]
+
+    percentage_errors = np.abs((y_test_filtered - y_pred_filtered) / y_test_filtered)
+    mape_decimal = np.mean(percentage_errors)
+
+    mape_percentage = mape_decimal * 100
+
+    return mape_percentage
+
+
+def getcrossvalidation(x, y, split, model):
+
+    folds = KFold(n_splits=split, shuffle=True)
+    score = cross_val_score(model, x, y, cv=folds)
     return score.mean()
-
-
-
