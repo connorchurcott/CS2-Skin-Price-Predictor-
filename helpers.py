@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.model_selection import cross_val_score, KFold
+import numpy as np
 
 CLEAN_CSV = "extracted_data.csv"
 
@@ -87,28 +88,40 @@ def getValuesAsArray():
 
 
 def getMAE(y_predicted, y_test):
-    total = 0
+    y_predicted = np.array(y_predicted)
+    y_test = np.array(y_test)
 
-    for i in range(len(y_predicted)):
-        total += abs(y_predicted[i] - y_test[i])
-
-    total = total / len(y_predicted)
+    total = np.mean(np.abs(y_predicted - y_test))
     return total
 
 
 def getRMSE(y_predicted, y_test):
+    y_predicted = np.array(y_predicted)
+    y_test = np.array(y_test)
 
-    sds = 0
-    for i in range(len(y_predicted)):
-        sds += (y_predicted[i] - y_test[i]) ** 2
-
-    sds = sds / len(y_predicted)
-    sds = sds**0.5
-    return sds
+    mse = np.mean((y_predicted - y_test) ** 2)
+    rmse = np.sqrt(mse)
+    return rmse
 
 
 def getMAPE(y_predicted, y_test):
-    return mean_absolute_percentage_error(y_test, y_predicted)
+    y_predicted = np.array(y_predicted, dtype=float)
+    y_test = np.array(y_test, dtype=float)
+
+    mask = np.abs(y_test) > 0.01
+
+    if not np.any(mask):
+        return 0.0
+
+    y_test_filtered = y_test[mask]
+    y_pred_filtered = y_predicted[mask]
+
+    percentage_errors = np.abs((y_test_filtered - y_pred_filtered) / y_test_filtered)
+    mape_decimal = np.mean(percentage_errors)
+
+    mape_percentage = mape_decimal * 100
+
+    return mape_percentage
 
 
 def getcrossvalidation(x, y, split, model):
