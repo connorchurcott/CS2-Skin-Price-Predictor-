@@ -1,4 +1,5 @@
 import tkinter as tk
+import numpy as np
 from tkinter import ttk
 from tkinter import messagebox as mbox
 from helpers import getCasesFromCSV
@@ -122,9 +123,7 @@ class GUIWindow:
         self.selectWeaponTypeBox.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         self.selectedStatTrak = tk.StringVar()
-        self.selectStatTrakBox = ttk.Combobox(
-            self.root, textvariable=self.selectedStatTrak, state="readonly"
-        )
+        self.selectStatTrakBox = ttk.Combobox(self.root, textvariable=self.selectedStatTrak, state="readonly")
         self.selectStatTrakBox["values"] = ["Yes", "No"]
         self.selectStatTrakBox.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
@@ -139,9 +138,7 @@ class GUIWindow:
         self.predictedValue = tk.DoubleVar()
         self.outputLabel = tk.Label(self.root, text="Predicted Value: ")
         self.outputLabel.grid(row=6, column=0, padx=10, pady=50, sticky="w")
-        self.outputBox = tk.Label(
-            self.root, textvariable=self.predictedValue, relief="sunken", width=15
-        )
+        self.outputBox = tk.Label(self.root, textvariable=self.predictedValue, relief="sunken", width=15)
         self.outputBox.grid(row=6, column=1, padx=1, pady=10, sticky="w")
 
         # self.realValue = tk.DoubleVar()
@@ -205,8 +202,7 @@ class GUIWindow:
         if selected == None:
             return
 
-        converted = convertUserInputToFeatures(
-            selected[0], selected[1], selected[2], selected[3], selected[4]
-        )
+        converted = convertUserInputToFeatures(selected[0], selected[1], selected[2], selected[3], selected[4])
         prediction = self.model.predict([converted])
-        self.setOutputValues(round(prediction[0], 2), 0)
+        prediction = np.expm1(prediction[0])
+        self.setOutputValues(round(prediction, 2), 0)
