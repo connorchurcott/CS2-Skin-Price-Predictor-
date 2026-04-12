@@ -13,7 +13,7 @@ PREREQUISITES: Must have Python 3.x and Git installed.
 First, we must download this repo and download the nessecary library dependencies. 
 
 1. Clone this repo locally: git clone https://github.com/connorchurcott/CS2-Skin-Price-Predictor-.git
-2. Change to this repo's folder: cd CS2-Skin-Price-Predictor
+2. Change to this repo's folder: cd CS2-Skin-Price-Predictor-
 3. Setup Virtual Environment: python -m venv venv
 4. Start venv: venv/Scripts/activate    **NOTE: this command will be different for OS's other than Windows**
 5. Install libraries in venv: pip install -r requirements.txt
